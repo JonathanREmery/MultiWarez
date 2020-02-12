@@ -1,0 +1,42 @@
+﻿  main.cpp
+C:\Users\Jonathan\source\repos\MultiWarez\MultiWarez\command.h(26): warning C4091: 'static ': ignored on left of 'Command' when no variable is declared
+C:\Users\Jonathan\source\repos\MultiWarez\MultiWarez\command.h(20): warning C4267: 'argument': conversion from 'size_t' to 'int', possible loss of data
+C:\Users\Jonathan\source\repos\MultiWarez\MultiWarez\files.h(16): warning C4091: 'static ': ignored on left of 'FileSystem' when no variable is declared
+C:\Users\Jonathan\source\repos\MultiWarez\MultiWarez\files.h(127): warning C4101: 'e': unreferenced local variable
+C:\Users\Jonathan\source\repos\MultiWarez\MultiWarez\files.h(148): warning C4101: 'e': unreferenced local variable
+C:\Users\Jonathan\source\repos\MultiWarez\MultiWarez\files.h(168): warning C4101: 'e': unreferenced local variable
+C:\Users\Jonathan\source\repos\MultiWarez\MultiWarez\process.h(102): warning C4312: 'type cast': conversion from 'DWORD' to 'LPCVOID' of greater size
+C:\Users\Jonathan\source\repos\MultiWarez\MultiWarez\process.h(132): warning C4312: 'type cast': conversion from 'DWORD' to 'LPCVOID' of greater size
+C:\Users\Jonathan\source\repos\MultiWarez\MultiWarez\process.h(162): warning C4312: 'type cast': conversion from 'DWORD' to 'LPCVOID' of greater size
+C:\Users\Jonathan\source\repos\MultiWarez\MultiWarez\process.h(194): warning C4309: 'initializing': truncation of constant value
+C:\Users\Jonathan\source\repos\MultiWarez\MultiWarez\process.h(197): warning C4312: 'type cast': conversion from 'DWORD' to 'LPCVOID' of greater size
+C:\Users\Jonathan\source\repos\MultiWarez\MultiWarez\process.h(254): warning C4312: 'type cast': conversion from 'DWORD' to 'LPVOID' of greater size
+C:\Users\Jonathan\source\repos\MultiWarez\MultiWarez\process.h(267): warning C4312: 'type cast': conversion from 'DWORD' to 'LPVOID' of greater size
+C:\Users\Jonathan\source\repos\MultiWarez\MultiWarez\process.h(269): warning C4312: 'type cast': conversion from 'DWORD' to 'LPVOID' of greater size
+C:\Users\Jonathan\source\repos\MultiWarez\MultiWarez\process.h(305): warning C4312: 'type cast': conversion from 'DWORD' to 'LPVOID' of greater size
+C:\Users\Jonathan\source\repos\MultiWarez\MultiWarez\process.h(318): warning C4312: 'type cast': conversion from 'DWORD' to 'LPVOID' of greater size
+C:\Users\Jonathan\source\repos\MultiWarez\MultiWarez\process.h(320): warning C4312: 'type cast': conversion from 'DWORD' to 'LPVOID' of greater size
+C:\Users\Jonathan\source\repos\MultiWarez\MultiWarez\process.h(357): warning C4312: 'type cast': conversion from 'DWORD' to 'LPVOID' of greater size
+C:\Users\Jonathan\source\repos\MultiWarez\MultiWarez\process.h(370): warning C4312: 'type cast': conversion from 'DWORD' to 'LPVOID' of greater size
+C:\Users\Jonathan\source\repos\MultiWarez\MultiWarez\process.h(372): warning C4312: 'type cast': conversion from 'DWORD' to 'LPVOID' of greater size
+C:\Users\Jonathan\source\repos\MultiWarez\MultiWarez\process.h(408): warning C4312: 'type cast': conversion from 'DWORD' to 'LPVOID' of greater size
+C:\Users\Jonathan\source\repos\MultiWarez\MultiWarez\process.h(421): warning C4312: 'type cast': conversion from 'DWORD' to 'LPVOID' of greater size
+C:\Users\Jonathan\source\repos\MultiWarez\MultiWarez\process.h(424): warning C4312: 'type cast': conversion from 'DWORD' to 'LPVOID' of greater size
+C:\Users\Jonathan\source\repos\MultiWarez\MultiWarez\process.h(454): warning C4267: '+=': conversion from 'size_t' to 'int', possible loss of data
+C:\Users\Jonathan\source\repos\MultiWarez\MultiWarez\process.h(478): warning C4267: 'argument': conversion from 'size_t' to 'int', possible loss of data
+C:\Users\Jonathan\source\repos\MultiWarez\MultiWarez\process.h(489): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
+C:\Users\Jonathan\source\repos\MultiWarez\MultiWarez\process.h(495): warning C4267: '+=': conversion from 'size_t' to 'DWORD', possible loss of data
+C:\Users\Jonathan\source\repos\MultiWarez\MultiWarez\process.h(497): warning C4267: '+=': conversion from 'size_t' to 'DWORD', possible loss of data
+C:\Users\Jonathan\source\repos\MultiWarez\MultiWarez\process.h(500): warning C4267: '+=': conversion from 'size_t' to 'DWORD', possible loss of data
+C:\Users\Jonathan\source\repos\MultiWarez\MultiWarez\process.h(529): warning C4311: 'type cast': pointer truncation from 'void *' to 'DWORD'
+C:\Users\Jonathan\source\repos\MultiWarez\MultiWarez\process.h(529): warning C4302: 'type cast': truncation from 'void *' to 'DWORD'
+C:\Users\Jonathan\source\repos\MultiWarez\MultiWarez\process.h(536): warning C4312: 'type cast': conversion from 'DWORD' to 'LPVOID' of greater size
+C:\Users\Jonathan\source\repos\MultiWarez\MultiWarez\process.h(621): warning C4311: 'type cast': pointer truncation from 'BYTE *' to 'DWORD'
+C:\Users\Jonathan\source\repos\MultiWarez\MultiWarez\process.h(621): warning C4302: 'type cast': truncation from 'BYTE *' to 'DWORD'
+C:\Users\Jonathan\source\repos\MultiWarez\MultiWarez\process.h(657): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
+  Generating code
+  3 of 332 functions ( 0.9%) were compiled, the rest were copied from previous compilation.
+    0 functions were new in current compilation
+    10 functions had inline decision re-evaluated but remain unchanged
+  Finished generating code
+  MultiWarez.vcxproj -> C:\Users\Jonathan\source\repos\MultiWarez\x64\Release\MultiWarez.exe

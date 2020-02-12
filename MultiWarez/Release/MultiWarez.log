@@ -1,0 +1,75 @@
+﻿  main.cpp
+C:\Users\Jonathan\source\repos\MultiWarez\MultiWarez\command.h(26): warning C4091: 'static ': ignored on left of 'Command' when no variable is declared
+C:\Users\Jonathan\source\repos\MultiWarez\MultiWarez\parse.h(74): warning C4091: 'static ': ignored on left of 'Parser' when no variable is declared
+C:\Users\Jonathan\source\repos\MultiWarez\MultiWarez\parse.h(22): warning C4018: '<': signed/unsigned mismatch
+C:\Users\Jonathan\source\repos\MultiWarez\MultiWarez\parse.h(25): warning C4018: '<': signed/unsigned mismatch
+C:\Users\Jonathan\source\repos\MultiWarez\MultiWarez\parse.h(51): warning C4018: '<': signed/unsigned mismatch
+C:\Users\Jonathan\source\repos\MultiWarez\MultiWarez\parse.h(57): warning C4018: '<': signed/unsigned mismatch
+C:\Users\Jonathan\source\repos\MultiWarez\MultiWarez\files.h(7): error C2039: 'filesystem': is not a member of 'std'
+  C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.20.27508\include\experimental\filesystem(30): note: see declaration of 'std'
+C:\Users\Jonathan\source\repos\MultiWarez\MultiWarez\files.h(7): error C2878: 'filesystem': a namespace or class of this name does not exist
+C:\Users\Jonathan\source\repos\MultiWarez\MultiWarez\files.h(19): warning C4091: 'static ': ignored on left of 'FileSystem' when no variable is declared
+C:\Users\Jonathan\source\repos\MultiWarez\MultiWarez\files.h(25): error C2653: 'fs': is not a class or namespace name
+C:\Users\Jonathan\source\repos\MultiWarez\MultiWarez\files.h(25): error C3646: 'path': unknown override specifier
+C:\Users\Jonathan\source\repos\MultiWarez\MultiWarez\files.h(25): error C4430: missing type specifier - int assumed. Note: C++ does not support default-int
+C:\Users\Jonathan\source\repos\MultiWarez\MultiWarez\files.h(33): error C2065: 'path': undeclared identifier
+C:\Users\Jonathan\source\repos\MultiWarez\MultiWarez\files.h(33): error C2653: 'fs': is not a class or namespace name
+C:\Users\Jonathan\source\repos\MultiWarez\MultiWarez\files.h(33): error C3861: 'path': identifier not found
+C:\Users\Jonathan\source\repos\MultiWarez\MultiWarez\files.h(34): error C2065: 'path': undeclared identifier
+C:\Users\Jonathan\source\repos\MultiWarez\MultiWarez\files.h(34): error C2660: 'fopen_s': function does not take 2 arguments
+  C:\Program Files (x86)\Windows Kits\10\Include\10.0.17763.0\ucrt\stdio.h(97): note: see declaration of 'fopen_s'
+C:\Users\Jonathan\source\repos\MultiWarez\MultiWarez\files.h(54): error C2653: 'fs': is not a class or namespace name
+C:\Users\Jonathan\source\repos\MultiWarez\MultiWarez\files.h(54): error C3646: 'path': unknown override specifier
+C:\Users\Jonathan\source\repos\MultiWarez\MultiWarez\files.h(54): error C4430: missing type specifier - int assumed. Note: C++ does not support default-int
+C:\Users\Jonathan\source\repos\MultiWarez\MultiWarez\files.h(60): error C2065: 'path': undeclared identifier
+C:\Users\Jonathan\source\repos\MultiWarez\MultiWarez\files.h(60): error C2653: 'fs': is not a class or namespace name
+C:\Users\Jonathan\source\repos\MultiWarez\MultiWarez\files.h(60): error C3861: 'path': identifier not found
+C:\Users\Jonathan\source\repos\MultiWarez\MultiWarez\files.h(61): error C2065: 'path': undeclared identifier
+C:\Users\Jonathan\source\repos\MultiWarez\MultiWarez\files.h(64): error C2065: 'path': undeclared identifier
+C:\Users\Jonathan\source\repos\MultiWarez\MultiWarez\files.h(68): error C2065: 'path': undeclared identifier
+C:\Users\Jonathan\source\repos\MultiWarez\MultiWarez\files.h(68): error C2653: 'fs': is not a class or namespace name
+C:\Users\Jonathan\source\repos\MultiWarez\MultiWarez\files.h(68): error C3861: 'path': identifier not found
+C:\Users\Jonathan\source\repos\MultiWarez\MultiWarez\files.h(69): error C2065: 'path': undeclared identifier
+C:\Users\Jonathan\source\repos\MultiWarez\MultiWarez\files.h(71): error C2065: 'path': undeclared identifier
+C:\Users\Jonathan\source\repos\MultiWarez\MultiWarez\files.h(81): error C2039: 'path': is not a member of 'Directory'
+  C:\Users\Jonathan\source\repos\MultiWarez\MultiWarez\files.h(50): note: see declaration of 'Directory'
+C:\Users\Jonathan\source\repos\MultiWarez\MultiWarez\files.h(88): error C2039: 'path': is not a member of 'File'
+  C:\Users\Jonathan\source\repos\MultiWarez\MultiWarez\files.h(21): note: see declaration of 'File'
+C:\Users\Jonathan\source\repos\MultiWarez\MultiWarez\files.h(102): error C2039: 'path': is not a member of 'Directory'
+  C:\Users\Jonathan\source\repos\MultiWarez\MultiWarez\files.h(50): note: see declaration of 'Directory'
+C:\Users\Jonathan\source\repos\MultiWarez\MultiWarez\files.h(105): error C2039: 'path': is not a member of 'File'
+  C:\Users\Jonathan\source\repos\MultiWarez\MultiWarez\files.h(21): note: see declaration of 'File'
+C:\Users\Jonathan\source\repos\MultiWarez\MultiWarez\files.h(123): error C2653: 'fs': is not a class or namespace name
+C:\Users\Jonathan\source\repos\MultiWarez\MultiWarez\files.h(123): error C2064: term does not evaluate to a function taking 1 arguments
+C:\Users\Jonathan\source\repos\MultiWarez\MultiWarez\files.h(123): error C3861: 'directory_entry': identifier not found
+C:\Users\Jonathan\source\repos\MultiWarez\MultiWarez\files.h(126): error C2653: 'fs': is not a class or namespace name
+C:\Users\Jonathan\source\repos\MultiWarez\MultiWarez\files.h(126): error C3861: 'directory_iterator': identifier not found
+C:\Users\Jonathan\source\repos\MultiWarez\MultiWarez\files.h(126): error C3312: no callable 'begin' function found for type 'unknown-type'
+C:\Users\Jonathan\source\repos\MultiWarez\MultiWarez\files.h(126): error C3312: no callable 'end' function found for type 'unknown-type'
+C:\Users\Jonathan\source\repos\MultiWarez\MultiWarez\files.h(127): error C2065: 'entry': undeclared identifier
+C:\Users\Jonathan\source\repos\MultiWarez\MultiWarez\files.h(130): error C2065: 'entry': undeclared identifier
+C:\Users\Jonathan\source\repos\MultiWarez\MultiWarez\files.h(131): error C2065: 'entry': undeclared identifier
+C:\Users\Jonathan\source\repos\MultiWarez\MultiWarez\files.h(131): error C2512: 'File': no appropriate default constructor available
+  C:\Users\Jonathan\source\repos\MultiWarez\MultiWarez\files.h(131): note: No constructor could take the source type, or constructor overload resolution was ambiguous
+C:\Users\Jonathan\source\repos\MultiWarez\MultiWarez\files.h(145): error C2653: 'fs': is not a class or namespace name
+C:\Users\Jonathan\source\repos\MultiWarez\MultiWarez\files.h(145): error C2064: term does not evaluate to a function taking 1 arguments
+C:\Users\Jonathan\source\repos\MultiWarez\MultiWarez\files.h(145): error C3861: 'directory_entry': identifier not found
+C:\Users\Jonathan\source\repos\MultiWarez\MultiWarez\files.h(148): error C2653: 'fs': is not a class or namespace name
+C:\Users\Jonathan\source\repos\MultiWarez\MultiWarez\files.h(148): error C3861: 'directory_iterator': identifier not found
+C:\Users\Jonathan\source\repos\MultiWarez\MultiWarez\files.h(148): error C3312: no callable 'begin' function found for type 'unknown-type'
+C:\Users\Jonathan\source\repos\MultiWarez\MultiWarez\files.h(148): error C3312: no callable 'end' function found for type 'unknown-type'
+C:\Users\Jonathan\source\repos\MultiWarez\MultiWarez\files.h(149): error C2065: 'entry': undeclared identifier
+C:\Users\Jonathan\source\repos\MultiWarez\MultiWarez\files.h(152): error C2065: 'entry': undeclared identifier
+C:\Users\Jonathan\source\repos\MultiWarez\MultiWarez\files.h(153): error C2065: 'entry': undeclared identifier
+C:\Users\Jonathan\source\repos\MultiWarez\MultiWarez\files.h(153): error C2440: '<function-style-cast>': cannot convert from 'bool' to 'Directory'
+  C:\Users\Jonathan\source\repos\MultiWarez\MultiWarez\files.h(153): note: No constructor could take the source type, or constructor overload resolution was ambiguous
+C:\Users\Jonathan\source\repos\MultiWarez\MultiWarez\files.h(168): error C2653: 'fs': is not a class or namespace name
+C:\Users\Jonathan\source\repos\MultiWarez\MultiWarez\files.h(168): error C2064: term does not evaluate to a function taking 1 arguments
+C:\Users\Jonathan\source\repos\MultiWarez\MultiWarez\files.h(168): error C3861: 'directory_entry': identifier not found
+C:\Users\Jonathan\source\repos\MultiWarez\MultiWarez\files.h(171): error C2653: 'fs': is not a class or namespace name
+C:\Users\Jonathan\source\repos\MultiWarez\MultiWarez\files.h(171): error C3861: 'directory_iterator': identifier not found
+C:\Users\Jonathan\source\repos\MultiWarez\MultiWarez\files.h(171): error C3312: no callable 'begin' function found for type 'unknown-type'
+C:\Users\Jonathan\source\repos\MultiWarez\MultiWarez\files.h(171): error C3312: no callable 'end' function found for type 'unknown-type'
+C:\Users\Jonathan\source\repos\MultiWarez\MultiWarez\files.h(172): error C2065: 'entry': undeclared identifier
+C:\Users\Jonathan\source\repos\MultiWarez\MultiWarez\files.h(175): error C2065: 'entry': undeclared identifier
+C:\Users\Jonathan\source\repos\MultiWarez\MultiWarez\files.h(176): error C2065: 'entry': undeclared identifier
