@@ -1,2 +1,2 @@
 # MultiWarez
-Malware/Worm WIP
+This is a project I am working on to learn more about malware. I am developing a full fledged malware to see what techniques a malware might use and how an antivirus might prevent it. Right now I am just working on the core code. It can read/modify files, run commands, and attach to and manipulate running processes. Currently I am working on DLL injection. Basic DLL injection and manual DLL injections on now working. I eventually plan to implement an exploit kit aswell but at that point I will stop posting the code on GitHub and setup a safe VM network for testing.

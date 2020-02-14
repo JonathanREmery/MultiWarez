@@ -7,8 +7,6 @@
 
 #include "dll.h"
 
-bool debugMode = false;
-
 class Module {
 
 public:
@@ -43,10 +41,7 @@ public:
         if (processID)
             handle = OpenProcess(PROCESS_ALL_ACCESS, false, processID);
 
-        if (!handle && debugMode) {
-            std::cout << "Failed to open process: " << name << std::endl;
-            *this = Process(processName);
-        } else if (!handle) {
+        if (!handle) {
             *this = Process(processName);
         }
 
@@ -61,10 +56,15 @@ public:
         if (processID)
             handle = OpenProcess(PROCESS_ALL_ACCESS, false, processID);
 
-        if (!handle && debugMode)
-            std::cout << "Failed to open process: " << name << std::endl;
-        else if (!handle)
+        if (!handle)
             *this = Process(processID_);
+
+        modules = getModules(processID_);
+    }
+
+    ~Process() {
+        if (this->handle && this->handle != INVALID_HANDLE_VALUE)
+            CloseHandle(this->handle);
     }
 
     PVOID pointerToAddress(PVOID base, int offsets[]) {
@@ -253,7 +253,7 @@ public:
             if (address != 0) {
 
                 DWORD oldProtect;
-                if (!VirtualProtectEx(handle, address, sizeof(BYTE), PAGE_EXECUTE_READWRITE, &oldProtect) && debugMode)
+                if (!VirtualProtectEx(handle, address, sizeof(BYTE), PAGE_EXECUTE_READWRITE, &oldProtect))
                     std::cout << "Error modifying process memory access - " << GetLastError() << std::endl;
 
                 if (GetLastError() == 0x5) {
@@ -266,9 +266,9 @@ public:
                         this->writeByte(address, b);
                 }
 
-                if (!WriteProcessMemory(handle, address, &b, sizeof(BYTE), 0) && debugMode)
+                if (!WriteProcessMemory(handle, address, &b, sizeof(BYTE), 0))
                     std::cout << "Error writing to process memory - " << GetLastError() << std::endl;
-                if (!VirtualProtectEx(handle, address, sizeof(BYTE), oldProtect, &oldProtect) && debugMode)
+                if (!VirtualProtectEx(handle, address, sizeof(BYTE), oldProtect, &oldProtect))
                     std::cout << "Error modifying process memory access - " << GetLastError() << std::endl;
 
             } else {
@@ -304,7 +304,7 @@ public:
             if (address != 0) {
 
                 DWORD oldProtect;
-                if (!VirtualProtectEx(handle, address, sizeof(int), PAGE_EXECUTE_READWRITE, &oldProtect) && debugMode)
+                if (!VirtualProtectEx(handle, address, sizeof(int), PAGE_EXECUTE_READWRITE, &oldProtect))
                     std::cout << "Error modifying process memory access - " << GetLastError() << std::endl;
 
                 if (GetLastError() == 0x5) {
@@ -317,9 +317,9 @@ public:
                         this->writeInt(address, i);
                 }
 
-                if (!WriteProcessMemory(handle, address, &i, sizeof(int), 0) && debugMode)
+                if (!WriteProcessMemory(handle, address, &i, sizeof(int), 0))
                     std::cout << "Error writing to process memory - " << GetLastError() << std::endl;
-                if (!VirtualProtectEx(handle, address, sizeof(int), oldProtect, &oldProtect) && debugMode)
+                if (!VirtualProtectEx(handle, address, sizeof(int), oldProtect, &oldProtect))
                     std::cout << "Error modifying process memory access - " << GetLastError() << std::endl;
 
             } else {
@@ -356,7 +356,7 @@ public:
             if (address != 0) {
 
                 DWORD oldProtect;
-                if (!VirtualProtectEx(handle, address, sizeof(DWORD), PAGE_EXECUTE_READWRITE, &oldProtect) && debugMode)
+                if (!VirtualProtectEx(handle, address, sizeof(DWORD), PAGE_EXECUTE_READWRITE, &oldProtect))
                     std::cout << "Error modifying process memory access - " << GetLastError() << std::endl;
                 
                 if (GetLastError() == 0x5) {
@@ -369,9 +369,9 @@ public:
                         this->writeDword(address, d);
                 }
 
-                if (!WriteProcessMemory(handle, address, &d, sizeof(DWORD), 0) && debugMode)
+                if (!WriteProcessMemory(handle, address, &d, sizeof(DWORD), 0))
                     std::cout << "Error writing to process memory - " << GetLastError() << std::endl;
-                if (!VirtualProtectEx(handle, address, sizeof(DWORD), oldProtect, &oldProtect) && debugMode)
+                if (!VirtualProtectEx(handle, address, sizeof(DWORD), oldProtect, &oldProtect))
                     std::cout << "Error modifying process memory access - " << GetLastError() << std::endl;
             
             } else {
@@ -407,7 +407,7 @@ public:
             if (address != 0) {
 
                 DWORD oldProtect;
-                if (!VirtualProtectEx(handle, address, str.length()+1, PAGE_EXECUTE_READWRITE, &oldProtect) && debugMode)
+                if (!VirtualProtectEx(handle, address, str.length()+1, PAGE_EXECUTE_READWRITE, &oldProtect))
                     std::cout << "Error modifying process memory access - " << GetLastError() << std::endl;
 
                 if (GetLastError() == 0x5) {
@@ -420,10 +420,10 @@ public:
                         this->writeString(address, str);
                 }
 
-                if (!WriteProcessMemory(handle, address, str.c_str(), str.length()+1, 0) && debugMode)
+                if (!WriteProcessMemory(handle, address, str.c_str(), str.length()+1, 0))
                     std::cout << "Error writing to process memory - " << GetLastError() << std::endl;
                 
-                if (!VirtualProtectEx(handle, address, str.length()+1, oldProtect, &oldProtect) && debugMode)
+                if (!VirtualProtectEx(handle, address, str.length()+1, oldProtect, &oldProtect))
                     std::cout << "Error modifying process memory access - " << GetLastError() << std::endl;
 
             } else {
@@ -547,6 +547,7 @@ public:
     }
 
     BOOL basicInject(Dll dll) {
+
         char* dllNameAddress = (char*)this->allocMemory(MAX_PATH);
 
         if (dllNameAddress == 0x0) {
@@ -554,18 +555,19 @@ public:
             return false;
         }
 
-        this->writeString(dllNameAddress, dll.image->ModuleName);
+        this->writeString(dllNameAddress, dll.name);
 
 
         PVOID pLoadLibraryA = this->getProcAddress("KERNEL32.DLL", "LoadLibraryA");
 
         if (!this->handle) {
             std::cout << "Error no handle!" << std::endl;
+            *this = Process(this->name);
         }
 
         HANDLE remoteThread = CreateRemoteThread(this->handle, 0, 0, (LPTHREAD_START_ROUTINE)pLoadLibraryA, dllNameAddress, 0, 0);
 
-        std::cout << remoteThread << std::endl;
+        Sleep(1); // This magically fixes everything. Without this sleep the program crashes... I hate programming sometimes
 
         if (!remoteThread) {
             std::cout << "Error creating remote thread in process" << std::endl;
@@ -573,6 +575,99 @@ public:
         }
 
         this->freeMemory(dllNameAddress);
+
+        return true;
+    }
+
+    BOOL manualInject(Dll dll) {
+
+        if (!this->handle) {
+            std::cout << "Invalid handle!" << std::endl;
+            return false;
+        }
+
+        if (!dll.size) {
+            std::cout << "Invalid DLL size!" << std::endl;
+            return false;
+        }
+
+        if (!dll.dosHeader) {
+            std::cout << "Invalid DLL DOS Header!" << std::endl;
+            return false;
+        }
+
+        if (!dll.ntHeaders) {
+            std::cout << "Invalid DLL NT Headers!" << std::endl;
+            return false;
+        }
+
+        if (!dll.sectionHeader) {
+            std::cout << "Invalid DLL Section Header!" << std::endl;
+            return false;
+        }
+
+        PVOID image = VirtualAllocEx(this->handle, 0, (SIZE_T)dll.ntHeaders->OptionalHeader.SizeOfImage, MEM_RESERVE | MEM_COMMIT, PAGE_EXECUTE_READWRITE);
+
+        if (!image) {
+            std::cout << "Error allocating memory in remote process for DLL!" << std::endl;
+            return false;
+        }
+
+        if (!WriteProcessMemory(this->handle, image, dll.data, dll.ntHeaders->OptionalHeader.SizeOfHeaders, 0)) {
+            std::cout << "Error writing DLL headers to remote process!" << std::endl;
+        }
+
+        for (int i = 0; i < dll.ntHeaders->FileHeader.NumberOfSections; i++) {
+            if (!WriteProcessMemory(this->handle, (PVOID)((BYTE*)image + dll.sectionHeader[i].VirtualAddress),
+                (PVOID)((BYTE*)dll.data + dll.sectionHeader[i].PointerToRawData), dll.sectionHeader[i].SizeOfRawData, 0)) {
+                std::cout << "Error writing DLL section header to remote process!" << std::endl;
+            }
+        }
+
+        PVOID loader = VirtualAllocEx(this->handle, 0, 4096, MEM_RESERVE | MEM_COMMIT, PAGE_EXECUTE_READWRITE);
+
+        if (!loader) {
+            std::cout << "Error allocating memory for loader code!" << std::endl;
+        }
+
+        DllData dllData;
+
+        memset(&dllData, 0, sizeof(DllData));
+
+        dllData.baseAddress = image;
+        dllData.ntHeaders = (PIMAGE_NT_HEADERS)((BYTE*)image + dll.dosHeader->e_lfanew);
+        dllData.reloc = (PIMAGE_BASE_RELOCATION)((BYTE*)image + dll.ntHeaders->OptionalHeader.DataDirectory[IMAGE_DIRECTORY_ENTRY_BASERELOC].VirtualAddress);
+        dllData.importDescriptors = (PIMAGE_IMPORT_DESCRIPTOR)((BYTE*)image + dll.ntHeaders->OptionalHeader.DataDirectory[IMAGE_DIRECTORY_ENTRY_IMPORT].VirtualAddress);
+        dllData.loadLibraryA = LoadLibraryA;
+        dllData.getProcAddress = GetProcAddress;
+        dllData.dllMain = (pDllMain)((PVOID)((BYTE*)image + dll.ntHeaders->OptionalHeader.AddressOfEntryPoint));
+
+        if (!WriteProcessMemory(this->handle, loader, &dllData, sizeof(DllData), 0)) {
+            std::cout << "Error writing DllData struct to process memory!" << std::endl;
+        }
+
+        if (!WriteProcessMemory(this->handle, (PVOID)((DllData*)loader + 1), LoadDll, (DWORD)LoadDllEnd - (DWORD)LoadDll, 0)) {
+            std::cout << "Error writing loader code to process memory!" << std::endl;
+        }
+
+        HANDLE hThread = CreateRemoteThread(this->handle, 0, 0, (LPTHREAD_START_ROUTINE)((DllData*)loader + 1), loader, 0, 0);
+
+        if (!hThread) {
+            std::cout << "Error creating remote thread in process!" << std::endl;
+        }
+
+        DWORD exitCode;
+
+        WaitForSingleObject(hThread, INFINITE);
+        GetExitCodeThread(hThread, &exitCode);
+
+        if (!exitCode) {
+            std::cout << "Thread did not exit properly!" << std::endl;
+        }
+
+        CloseHandle(hThread);
+        
+        VirtualFreeEx(this->handle, loader, 0, MEM_RELEASE);
 
         return true;
     }
@@ -626,7 +721,7 @@ public:
     }
 
 private:
-    
+
     DWORD getProcessID(std::string processName) {
 
         DWORD processID = 0;
