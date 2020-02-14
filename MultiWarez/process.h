@@ -5,17 +5,19 @@
 #include <Windows.h>
 #include <TlHelp32.h>
 
+#include "dll.h"
+
 bool debugMode = false;
 
 class Module {
 
 public:
 
-    DWORD address;
+    PVOID address;
     std::string name;
     MODULEENTRY32 mod;
 
-    Module(DWORD address, std::string name, MODULEENTRY32 mod) {
+    Module(PVOID address, std::string name, MODULEENTRY32 mod) {
         this->address = address;
         this->name = name;
         this->mod = mod;
@@ -29,7 +31,7 @@ public:
 
     std::string name = "";
     DWORD processID = 0;
-    DWORD baseAddress = 0;
+    PVOID baseAddress = 0;
     HANDLE handle = 0;
 
     std::vector<Module> modules;
@@ -65,17 +67,17 @@ public:
             *this = Process(processID_);
     }
 
-    DWORD pointerToAddress(DWORD base, int offsets[]) {
+    PVOID pointerToAddress(PVOID base, int offsets[]) {
 
-        DWORD r = 0x0;
+        PVOID r = 0x0;
 
         if (handle) {
 
             r = base;
 
             for (int i = 0; i < (sizeof(offsets) / 4) - 1; i++) {
-                r = readDword(r);
-                r += offsets[i];
+                r = (PVOID)readDword(r);
+                r = (PVOID)((BYTE*)r+offsets[i]);
             }
 
         } else {
@@ -96,7 +98,7 @@ public:
 
     }
 
-    BYTE readByte(DWORD address) {
+    BYTE readByte(PVOID address) {
         if (handle) {
             BYTE r = -0xff;
             ReadProcessMemory(handle, (LPCVOID)address, &r, sizeof(BYTE), 0);
@@ -116,17 +118,17 @@ public:
         }
     }
 
-    std::vector<BYTE> readBytes(DWORD address, int size) {
+    std::vector<BYTE> readBytes(PVOID address, int size) {
 
         std::vector<BYTE> bytes = {};
 
         for (int i = 0; i < size; i += sizeof(BYTE))
-            bytes.push_back(this->readByte(address + i));
+            bytes.push_back(this->readByte((PVOID)((BYTE*)address + i)));
 
         return bytes;
     }
 
-    int readInt(DWORD address) {
+    int readInt(PVOID address) {
         if (handle) {
             int r = 0;
             ReadProcessMemory(handle, (LPCVOID)address, &r, sizeof(int), 0);
@@ -146,17 +148,17 @@ public:
         }
     }
 
-    std::vector<int> readInts(DWORD address, int size) {
+    std::vector<int> readInts(PVOID address, int size) {
 
         std::vector<int> ints = {};
 
         for (int i = 0; i < size; i += sizeof(int))
-            ints.push_back(this->readInt(address + i));
+            ints.push_back(this->readInt((PVOID)((BYTE*)address + i)));
 
         return ints;
     }
 
-    DWORD readDword(DWORD address) {
+    DWORD readDword(PVOID address) {
         if (handle) {
             DWORD r = 0;
             ReadProcessMemory(handle, (LPCVOID)address, &r, sizeof(DWORD), 0);
@@ -176,17 +178,17 @@ public:
         }
     }
 
-    std::vector<DWORD> readDwords(DWORD address, int size) {
+    std::vector<DWORD> readDwords(PVOID address, int size) {
 
         std::vector<DWORD> dwords = {};
 
         for (int i = 0; i < size; i += sizeof(DWORD))
-            dwords.push_back(this->readDword(address + i));
+            dwords.push_back(this->readDword((PVOID)((BYTE*)address + i)));
 
         return dwords;
     }
 
-    std::string readString(DWORD address) {
+    std::string readString(PVOID address) {
 
         std::string r = "";
 
@@ -194,7 +196,7 @@ public:
             char c = 0xFF;
             int i = 0;
             while (c != 0x0) {
-                ReadProcessMemory(handle, (LPCVOID)(address+i), &c, sizeof(char), 0);
+                ReadProcessMemory(handle, (LPCVOID)((BYTE*)address+i), &c, sizeof(char), 0);
                 r += c;
                 i += 1;
             }
@@ -216,7 +218,7 @@ public:
         }
     }
 
-    std::vector<std::string> readStrings(DWORD address, int size) {
+    std::vector<std::string> readStrings(PVOID address, int size) {
 
         std::vector<std::string> strings = {};
         
@@ -228,7 +230,7 @@ public:
         for (int j = 0; j < size; j++) {
 
             while (c != 0x0) {
-                c = this->readByte(address + charsRead);
+                c = this->readByte((PVOID)((BYTE*)address + charsRead));
                 temp += c;
                 charsRead++;
             }
@@ -244,14 +246,14 @@ public:
 
     }
 
-    void writeByte(DWORD address, BYTE b) {
+    void writeByte(PVOID address, BYTE b) {
         
         if (handle) {
 
             if (address != 0) {
 
                 DWORD oldProtect;
-                if (!VirtualProtectEx(handle, (LPVOID)address, (SIZE_T)sizeof(BYTE), PAGE_EXECUTE_READWRITE, &oldProtect) && debugMode)
+                if (!VirtualProtectEx(handle, address, sizeof(BYTE), PAGE_EXECUTE_READWRITE, &oldProtect) && debugMode)
                     std::cout << "Error modifying process memory access - " << GetLastError() << std::endl;
 
                 if (GetLastError() == 0x5) {
@@ -264,9 +266,9 @@ public:
                         this->writeByte(address, b);
                 }
 
-                if (!WriteProcessMemory(handle, (LPVOID)address, &b, (SIZE_T)sizeof(BYTE), 0) && debugMode)
+                if (!WriteProcessMemory(handle, address, &b, sizeof(BYTE), 0) && debugMode)
                     std::cout << "Error writing to process memory - " << GetLastError() << std::endl;
-                if (!VirtualProtectEx(handle, (LPVOID)address, (SIZE_T)sizeof(BYTE), oldProtect, &oldProtect) && debugMode)
+                if (!VirtualProtectEx(handle, address, sizeof(BYTE), oldProtect, &oldProtect) && debugMode)
                     std::cout << "Error modifying process memory access - " << GetLastError() << std::endl;
 
             } else {
@@ -288,21 +290,21 @@ public:
         }
     }
 
-    void writeBytes(DWORD address, BYTE bytes[]) {
+    void writeBytes(PVOID address, BYTE bytes[]) {
 
         for (int i = 0; i < sizeof(bytes); i++)
-            this->writeByte(address + i, bytes[i]);
+            this->writeByte((PVOID)((BYTE*)address + i), bytes[i]);
 
     }
 
-    void writeInt(DWORD address, int i) {
+    void writeInt(PVOID address, int i) {
 
         if (handle) {
 
             if (address != 0) {
 
                 DWORD oldProtect;
-                if (!VirtualProtectEx(handle, (LPVOID)address, (SIZE_T)sizeof(int), PAGE_EXECUTE_READWRITE, &oldProtect) && debugMode)
+                if (!VirtualProtectEx(handle, address, sizeof(int), PAGE_EXECUTE_READWRITE, &oldProtect) && debugMode)
                     std::cout << "Error modifying process memory access - " << GetLastError() << std::endl;
 
                 if (GetLastError() == 0x5) {
@@ -315,9 +317,9 @@ public:
                         this->writeInt(address, i);
                 }
 
-                if (!WriteProcessMemory(handle, (LPVOID)address, &i, (SIZE_T)sizeof(int), 0) && debugMode)
+                if (!WriteProcessMemory(handle, address, &i, sizeof(int), 0) && debugMode)
                     std::cout << "Error writing to process memory - " << GetLastError() << std::endl;
-                if (!VirtualProtectEx(handle, (LPVOID)address, (SIZE_T)sizeof(int), oldProtect, &oldProtect) && debugMode)
+                if (!VirtualProtectEx(handle, address, sizeof(int), oldProtect, &oldProtect) && debugMode)
                     std::cout << "Error modifying process memory access - " << GetLastError() << std::endl;
 
             } else {
@@ -340,21 +342,21 @@ public:
 
     }
 
-    void writeInts(DWORD address, int ints[]) {
+    void writeInts(PVOID address, int ints[]) {
 
         for (int i = 0; i < sizeof(ints)/sizeof(int); i += sizeof(int))
             this->writeInt(address, ints[i]);
 
     }
 
-    void writeDword(DWORD address, DWORD d) {
+    void writeDword(PVOID address, DWORD d) {
 
         if (handle) {
 
             if (address != 0) {
 
                 DWORD oldProtect;
-                if (!VirtualProtectEx(handle, (LPVOID)address, (SIZE_T)sizeof(DWORD), PAGE_EXECUTE_READWRITE, &oldProtect) && debugMode)
+                if (!VirtualProtectEx(handle, address, sizeof(DWORD), PAGE_EXECUTE_READWRITE, &oldProtect) && debugMode)
                     std::cout << "Error modifying process memory access - " << GetLastError() << std::endl;
                 
                 if (GetLastError() == 0x5) {
@@ -367,9 +369,9 @@ public:
                         this->writeDword(address, d);
                 }
 
-                if (!WriteProcessMemory(handle, (LPVOID)address, &d, (SIZE_T)sizeof(DWORD), 0) && debugMode)
+                if (!WriteProcessMemory(handle, address, &d, sizeof(DWORD), 0) && debugMode)
                     std::cout << "Error writing to process memory - " << GetLastError() << std::endl;
-                if (!VirtualProtectEx(handle, (LPVOID)address, (SIZE_T)sizeof(DWORD), oldProtect, &oldProtect) && debugMode)
+                if (!VirtualProtectEx(handle, address, sizeof(DWORD), oldProtect, &oldProtect) && debugMode)
                     std::cout << "Error modifying process memory access - " << GetLastError() << std::endl;
             
             } else {
@@ -391,21 +393,21 @@ public:
         }
     }
 
-    void writeDwords(DWORD address, DWORD dwords[]) {
+    void writeDwords(PVOID address, DWORD dwords[]) {
 
         for (int i = 0; i < sizeof(dwords) / sizeof(DWORD); i += sizeof(DWORD))
             this->writeDword(address, dwords[i]);
 
     }
 
-    void writeString(DWORD address, std::string str) {
+    void writeString(PVOID address, std::string str) {
 
         if (handle) {
 
             if (address != 0) {
 
                 DWORD oldProtect;
-                if (!VirtualProtectEx(handle, (LPVOID)address, (SIZE_T)str.length()+1, PAGE_EXECUTE_READWRITE, &oldProtect) && debugMode)
+                if (!VirtualProtectEx(handle, address, str.length()+1, PAGE_EXECUTE_READWRITE, &oldProtect) && debugMode)
                     std::cout << "Error modifying process memory access - " << GetLastError() << std::endl;
 
                 if (GetLastError() == 0x5) {
@@ -418,10 +420,10 @@ public:
                         this->writeString(address, str);
                 }
 
-                if (!WriteProcessMemory(handle, (LPVOID)address, str.c_str(), (SIZE_T)str.length()+1, 0) && debugMode)
+                if (!WriteProcessMemory(handle, address, str.c_str(), str.length()+1, 0) && debugMode)
                     std::cout << "Error writing to process memory - " << GetLastError() << std::endl;
                 
-                if (!VirtualProtectEx(handle, (LPVOID)address, (SIZE_T)str.length()+1, oldProtect, &oldProtect) && debugMode)
+                if (!VirtualProtectEx(handle, address, str.length()+1, oldProtect, &oldProtect) && debugMode)
                     std::cout << "Error modifying process memory access - " << GetLastError() << std::endl;
 
             } else {
@@ -445,12 +447,12 @@ public:
 
     }
 
-    void writeStrings(DWORD address, std::vector<std::string> strings) {
+    void writeStrings(PVOID address, std::vector<std::string> strings) {
 
         int strlens = 0;
 
         for (int i = 0; i < strings.size(); i++) {
-            this->writeString(address + strlens, strings[i]);
+            this->writeString((PVOID)((char*)address+strlens), strings[i]);
             strlens += strings[i].length()+1;
         }
 
@@ -460,16 +462,16 @@ public:
     // Optimized scan 8,520 bytes/second
     // Ultra optimized scan 11,003 bytes/second
 
-    DWORD aobScan(std::vector<BYTE> bytes) {
+    BYTE* aobScan(std::vector<BYTE> bytes) {
 
-        DWORD address = 0x0;
+        BYTE* address = 0x0;
 
         std::vector<BYTE> read;
 
         std::vector<BYTE> subBytes;
         std::vector<BYTE> subRead;
 
-        for (DWORD dw = getModuleAddress(); dw < 0xFFFFFFFF; dw+=0) {
+        for (BYTE* dw = (BYTE*)getModuleAddress(); dw < (BYTE*)0xFFFFFFFF; dw+=0) {
 
             read = this->readBytes(dw, bytes.size());
 
@@ -501,13 +503,13 @@ public:
         return address;
     }
 
-    DWORD allocMemory(int size) {
+    PVOID allocMemory(SIZE_T size) {
 
         void* address = 0;
 
         if (handle) {
 
-            address = VirtualAllocEx(handle, 0, (SIZE_T)size, MEM_COMMIT | MEM_RESERVE, PAGE_EXECUTE_READWRITE);
+            address = VirtualAllocEx(handle, 0, size, MEM_COMMIT | MEM_RESERVE, PAGE_EXECUTE_READWRITE);
 
             if (!address)
                 std::cout << "Error allocating memory in remote process - " << GetLastError() << std::endl;
@@ -522,14 +524,14 @@ public:
             return this->allocMemory(size);
         }
         
-        return (DWORD)address;
+        return address;
     }
 
-    void freeMemory(DWORD address) {
+    void freeMemory(PVOID address) {
 
         if (handle) {
             if (address != 0)
-                    if (!VirtualFreeEx(handle, (LPVOID)address, 0, MEM_RELEASE))
+                    if (!VirtualFreeEx(handle, address, 0, MEM_RELEASE))
                         std::cout << "Error freeing memory in remote process - " << GetLastError() << std::endl;
         } else {
 
@@ -544,7 +546,38 @@ public:
 
     }
 
-    DWORD getModuleAddress(std::string moduleName) {
+    BOOL basicInject(Dll dll) {
+        char* dllNameAddress = (char*)this->allocMemory(MAX_PATH);
+
+        if (dllNameAddress == 0x0) {
+            std::cout << "Error allocating memory for DLL name" << std::endl;
+            return false;
+        }
+
+        this->writeString(dllNameAddress, dll.image->ModuleName);
+
+
+        PVOID pLoadLibraryA = this->getProcAddress("KERNEL32.DLL", "LoadLibraryA");
+
+        if (!this->handle) {
+            std::cout << "Error no handle!" << std::endl;
+        }
+
+        HANDLE remoteThread = CreateRemoteThread(this->handle, 0, 0, (LPTHREAD_START_ROUTINE)pLoadLibraryA, dllNameAddress, 0, 0);
+
+        std::cout << remoteThread << std::endl;
+
+        if (!remoteThread) {
+            std::cout << "Error creating remote thread in process" << std::endl;
+            return false;
+        }
+
+        this->freeMemory(dllNameAddress);
+
+        return true;
+    }
+
+    PVOID getModuleAddress(std::string moduleName) {
 
         for (Module module : this->modules)
             if (module.name == moduleName)
@@ -554,11 +587,39 @@ public:
 
     }
 
-    DWORD getModuleAddress() {
+    FARPROC getProcAddress(std::string moduleName, std::string procName) {
+        return GetProcAddress(this->getModuleHandle(moduleName), procName.c_str());
+    }
+
+    FARPROC getProcAddress(std::string procName) {
+        return GetProcAddress(this->getModuleHandle(), procName.c_str());
+    }
+
+    HMODULE getModuleHandle(std::string moduleName) {
+
+        for (Module module : this->modules)
+            if (module.name == moduleName)
+                return module.mod.hModule;
+
+        return 0x0;
+
+    }
+
+    PVOID getModuleAddress() {
 
         for (Module module : this->modules)
             if (module.name == name)
                 return module.address;
+
+        return 0x0;
+
+    }
+
+    HMODULE getModuleHandle() {
+
+        for (Module module : this->modules)
+            if (module.name == name)
+                return module.mod.hModule;
 
         return 0x0;
 
@@ -614,7 +675,7 @@ private:
         if (snapshot)
             if (Module32First(snapshot, &mod))
                 do {
-                    Module module((DWORD)mod.modBaseAddr, mod.szModule, mod);
+                    Module module(mod.modBaseAddr, mod.szModule, mod);
                     modules.push_back(module);
                 } while (Module32Next(snapshot, &mod));
 

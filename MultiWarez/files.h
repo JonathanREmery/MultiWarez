@@ -1,5 +1,3 @@
-// TODO: Fix filesystem error
-
 #pragma once
 #include <filesystem>
 
